@@ -74,17 +74,6 @@ int main()
 {   
     struct Node* head = NULL;
 
-    struct Node* new_node = newNode("banana");
-    insertNode(&head, new_node);
-    new_node = newNode("abacate");
-    insertNode(&head, new_node);
-    new_node = newNode("uva");
-    insertNode(&head, new_node);
-    new_node = newNode("manga");
-    insertNode(&head, new_node);
-    new_node = newNode("laranja");
-    insertNode(&head, new_node);
-
     // Arquivos de entrada(string) e saída(binário)
     FILE* ptr;
     FILE* binPtr;
@@ -115,11 +104,9 @@ int main()
             continue;
         }
 
-        printf("Linha lida: %s", ch);
 
-        if (ch[strlen(ch) - 1] == '\n') {
-            ch[strlen(ch) - 1] = '\0';
-        }
+        ch[strcspn(ch, "\n")] = 0;  // Remove the newline character
+        printf("Linha lida: %s\n", ch);
 
         struct Node* new_node = newNode(ch);
         insertNode(&head, new_node);
@@ -134,6 +121,7 @@ int main()
  
     // Closing the file
     fclose(ptr);
+    fclose(binPtr);
 
     printf("Lista Encadeada Ordenada: ");
     writeList(head);
