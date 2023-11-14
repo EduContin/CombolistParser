@@ -1,66 +1,56 @@
 /*LE O NOVO ARQUIVO. BINARIO E PASSA OS DADOS PARA UM NOVO ARQUIVO TXT*/
-/*Recebe o nome do Arquivo Binario e do Arquivo de Texto como argumentos*/
+/*Recebe o arquivo binário como argumento*/
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
+char *Conversao_Binario_String(const char *binario) {
+    int tamanho = strlen(binario) / 8;                          // Calcula o tamanho da string resultante
+    char *resultado = (char *)malloc(tamanho + 1);              // Aloca memória para a string resultante
 
-char *Conversao_Binario_String(char *binario){
-    int tamanho = strlen(binario);
+    // Repetição para os bytes
+    for (int i = 0; i < tamanho; i++) {
+        int byte = 0;
 
-    // Garante que o tamanho da string binária seja múltiplo de 8 para representação de bytes
-    if (tamanho % 8 != 0) {
-        printf("Erro: A string binária não tem um tamanho válido.\n");
-        exit(1);
-    }
-
-    // Aloca memória para a string resultante (incluindo o caractere nulo)
-    char *resultado = (char *)malloc(tamanho / 8 + 1);
-
-    if (resultado == NULL) {
-        printf("Erro ao alocar memória");
-        exit(1);
-    }
-
-    // Converte cada byte da string binária para um caractere
-    for (int i = 0; i < tamanho / 8; i++) {
-        char byte = 0;
-
-        // Converte cada bit do byte
+        // Passa 8 bits para 1 byte
         for (int j = 0; j < 8; j++) {
             byte = (byte << 1) | (binario[i * 8 + j] - '0');
         }
 
-        resultado[i] = byte;
+        // Passa o byte pra string resultado
+        resultado[i] = (char)byte;
+
     }
 
-    resultado[tamanho / 8] = '\0';
-
+    resultado[tamanho] = '\0'; // Insere o caracter nulo no final da string
     return resultado;
 }
 
 
-
-
 int main(int argc,char *argv[]){
-    /*agrv[1] se refere ao arquivo.bin, já o argv[2] se refere ao arquivo.txt*/
+    /*agrv[2] se refere ao arquivo.bin, já q o argv[1] se refere ao arquivo.txt que será utilizado no gerador*/
 
-    printf("%d\n", argc);
+    char *arquivo_entrada = argv[2];
 
-    char *arquivo_entrada = argv[1];
-    char *arquivo_saida = argv[2];
 
+    // Abertura de Arquivo.bin + Criação caso inexistente da saída em txt
     FILE * arquivo_bin, *arquivo_txt;
     arquivo_bin = fopen(arquivo_entrada, "rb");
-    arquivo_txt = fopen(arquivo_saida, "w");
+    arquivo_txt = fopen("saida.txt", "w");
 
-    char binario[50];
+    char binario[368];
+    
     if(arquivo_bin){
-        fscanf(arquivo_bin,"%s", &binario);
-        
-        Conversao_Binario_String(binario);
-    }
-    else{
+        for(int i = 0;!feof(arquivo_bin);i++){
+            fgets(binario,368,arquivo_bin);
+            char *String_Saida = Conversao_Binario_String(binario);
+            fprintf(arquivo_txt,"%s\n", String_Saida);
+        }
+    } else{
         printf("Falha ao abrir o arquivo");
     }
+    fclose(arquivo_bin);
+    fclose(arquivo_txt);
+
+        
 }
