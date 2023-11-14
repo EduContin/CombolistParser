@@ -4,6 +4,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define TAMANHO_BIN 368
+
 char *Conversao_Binario_String(const char *binario) {
     int tamanho = strlen(binario) / 8;                          // Calcula o tamanho da string resultante
     char *resultado = (char *)malloc(tamanho + 1);              // Aloca memória para a string resultante
@@ -24,13 +26,14 @@ char *Conversao_Binario_String(const char *binario) {
 
     resultado[tamanho] = '\0'; // Insere o caracter nulo no final da string
     return resultado;
+    free(resultado);
 }
 
 
 int main(int argc,char *argv[]){
-    /*agrv[2] se refere ao arquivo.bin, já q o argv[1] se refere ao arquivo.txt que será utilizado no gerador*/
+    /*agrv[3] se refere ao arquivo binário que virá do editor.c, o qual será transcrito para txt*/
 
-    char *arquivo_entrada = argv[2];
+    char *arquivo_entrada = argv[3];
 
 
     // Abertura de Arquivo.bin + Criação caso inexistente da saída em txt
@@ -38,16 +41,20 @@ int main(int argc,char *argv[]){
     arquivo_bin = fopen(arquivo_entrada, "rb");
     arquivo_txt = fopen("saida.txt", "w");
 
-    char binario[368];
+    char* binario =(char*) calloc(TAMANHO_BIN, sizeof(char));
     
     if(arquivo_bin){
         for(int i = 0;!feof(arquivo_bin);i++){
-            fgets(binario,368,arquivo_bin);
+            fgets(binario,TAMANHO_BIN,arquivo_bin);
             char *String_Saida = Conversao_Binario_String(binario);
             fprintf(arquivo_txt,"%s\n", String_Saida);
         }
+        free(binario);
+        fclose(arquivo_bin);
+        fclose(arquivo_txt);
     } else{
         printf("Falha ao abrir o arquivo");
+        return 1;
     }
     fclose(arquivo_bin);
     fclose(arquivo_txt);
