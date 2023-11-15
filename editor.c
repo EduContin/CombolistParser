@@ -3,6 +3,8 @@
 #include <string.h>
 #include "lista.h"
 
+#define TAMANHO_CHAR 256
+
 int main(int argc,char *argv[])
 {
     if (argc != 3) {
@@ -70,13 +72,16 @@ int main(int argc,char *argv[])
         scanf("%d", &option);
 
         int ch;
-        while ((ch = getchar()) != '\n' && ch != EOF)
-            ;
+        while ((ch = getchar()) != '\n' && ch != EOF);
+        
+        char novo[TAMANHO_CHAR];
+        char emailRemover[TAMANHO_CHAR];
+        char emailBuscar[TAMANHO_CHAR];
 
         switch (option)
         {
         case 1:
-            char novo[256];
+            
 
             printf("Escreva o texto que gostaria de adicionar (ex: meu.email@gmail.com:segredo123): ");
 
@@ -86,7 +91,6 @@ int main(int argc,char *argv[])
             insertNode(&head, new_node);
             break;
         case 2:
-            char emailRemover[256];
 
             printf("Qual email gostaria de remover? (ex: meu.email@gmail.com): ");
 
@@ -96,7 +100,7 @@ int main(int argc,char *argv[])
 
             break;
         case 3:
-            char emailBuscar[256];
+            
 
             printf("Qual email gostaria de buscar? (ex: meu.email@gmail.com): ");
 
