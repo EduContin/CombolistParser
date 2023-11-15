@@ -127,11 +127,10 @@ void writeList(Node *head, int mode)
             char data[101];
             snprintf(data, sizeof(data), "%s:%s", temp->data.email, temp->data.senha);
             stringToBinary(binPtr, data);
-
         }
         temp = temp->next;
-        fclose(binPtr);
     }
+    fclose(binPtr);
 }
 
 char *readLine(FILE *file)
@@ -185,56 +184,55 @@ char *readLine(FILE *file)
     FINDS THE NOME BY EMAIL
     MODES: (1) Remove | (2) Prints FULL DATA
 */
-int findNode(Node **head_ref, char *email, int mode)
+int findNode(Node **head_ref, Node *prev, char *email, int mode)
 {
-    Node *temp = *head_ref, *prev;
-
-    // Caso o primeiro seja o node buscado:
-    if (temp != NULL && strcmp(temp->data.email, email) == 0)
+    if (*head_ref == NULL)
     {
-        if (mode == 1)
-        {
-            *head_ref = temp->next; // Novo head_ref = próximo
-            free(temp);             // Deleta node buscado
-            return 1;
-        }
-        else if (mode == 2)
-        {
-            printf("EMAIL: %s | SENHA: %s", temp->data.email, temp->data.senha);
-            return 1;
-        }
-    }
-
-    // Procura pelo email entre os nodes
-    // Mantém armazenado o node anterior para junção pós remoção (se o modo for de remover)
-    while (temp != NULL && strcmp(temp->data.email, email) != 0)
-    {
-        prev = temp;
-        temp = temp->next;
-    }
-
-    // If email was not present in linked list
-    if (temp == NULL)
         return 0;
+    }
 
-    if (mode == 1)
+    Node *temp = *head_ref;
+
+    // Handling o node head
+    if (strcmp(temp->data.email, email) == 0)
     {
-        // Unlink the node from linked list
-        prev->next = temp->next;
-
-        free(temp); // Free memory
+        if (mode == 1) // delete mode
+        {
+            if (prev != NULL)
+            {
+                prev->next = temp->next;
+            }
+            else
+            {
+                *head_ref = temp->next;
+            }
+            free(temp);
+        }
+        else if (mode == 2) // print mode
+        {
+            printf("\n#######################################################\n");
+            printf("EMAIL: %s | SENHA: %s", temp->data.email, temp->data.senha);
+            printf("\n#######################################################\n");
+        }
         return 1;
     }
-    else if (mode == 2)
+    else
     {
-        printf("EMAIL: %s | SENHA: %s", temp->data.email, temp->data.senha);
-        printf("\n\nNODE | BUSCAR | SUCESSO\n\n");
+        // Recurse with the next node
+        return findNode(&(temp->next), temp, email, mode);
     }
-    
 }
 
-int main()
+int main(int argc,char *argv[])
 {
+    if (argc != 3) {
+        printf("Formato inválido, utilize: ./programa <entrada.bin> <saida.bin>");
+        return 1;
+    }
+
+    char *entrada = argv[1];
+    char *saida = argv[2];
+
     Node *head = NULL;
 
     FILE *ptr;
@@ -242,8 +240,8 @@ int main()
 
     char *ch;
 
-    ptr = fopen("saida.bin", "rb");
-    binPtr = fopen("editado.bin", "wb");
+    ptr = fopen(entrada, "rb");
+    binPtr = fopen(saida, "wb");
 
     if (ptr == NULL)
     {
@@ -281,15 +279,13 @@ int main()
 
     do
     {
-        writeList(head, 1);
-
         printf("\n\nCOMBOLIST PARSER\n\n");
         printf("[1] Adicionar.\n");
         printf("[2] Remover.\n");
         printf("[3] Buscar Email.\n");
-        printf("[0] Finalizar Programa.\n\n");
-        printf("ESCOLHA SUA OPÇÃO (1, 2 ou 3): \n");
-
+        printf("[4] Salvar.\n");
+        printf("[0] Finalizar.\n");
+        printf("ESCOLHA SUA OPCAO (1, 2 ou 3): \n");
 
         scanf("%d", &option);
 
@@ -316,7 +312,7 @@ int main()
 
             scanf("%s", emailRemover);
 
-            findNode(&head, emailRemover, 1);
+            findNode(&head, NULL, emailRemover, 1);
 
             break;
         case 3:
@@ -326,11 +322,17 @@ int main()
 
             scanf("%s", emailBuscar);
 
-            findNode(&head, emailBuscar, 2);
+            findNode(&head, NULL, emailBuscar, 2);
+            break;
+        case 4:
+            writeList(head, 2);
             break;
         }
 
     } while (option != 0);
+
+    // Salvamento obrigatório ao final da execução
+    writeList(head, 2);
 
     fclose(ptr);
     fclose(binPtr);
