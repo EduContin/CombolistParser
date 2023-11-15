@@ -3,6 +3,8 @@
 #include <string.h>
 #include "lista.h"
 
+
+// Cria um novo Nó
 Node *newNode(char *data)
 {
     char *email = strtok(data, ":");
@@ -18,8 +20,10 @@ Node *newNode(char *data)
     strncpy(node->data.senha, senha, sizeof(node->data.senha) - 1);
     node->next = NULL;
     return node;
+    free(node);
 }
 
+// 
 void insertNode(Node **head_ref, Node *new_node)
 {
     Node *current;
@@ -80,6 +84,7 @@ char *binaryToString(char *binary)
     result[resultLen] = '\0';
 
     return result;
+    free(result);
 }
 
 /*
