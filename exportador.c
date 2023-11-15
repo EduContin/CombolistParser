@@ -36,18 +36,19 @@ int main(int argc,char *argv[]){
     /*agrv[3] se refere ao arquivo binário que virá do editor.c, o qual será transcrito para txt*/
 
     // Verifica a se a quantidade de argumentos recebidos esta correta
-    if (argc < 2)
+    if (argc < 3)
     {
         printf("ERRO: numero errado de argumentos presentes");
         return 1;
     }
     
     char *arquivo_entrada = argv[1];
+    char *arquivo_saida = argv[2];
 
     // Abertura de Arquivo.bin + Criação caso inexistente da saída em txt
     FILE * arquivo_bin, *arquivo_txt;
     arquivo_bin = fopen(arquivo_entrada, "rb");
-    arquivo_txt = fopen("saida.txt", "w");
+    arquivo_txt = fopen(arquivo_saida, "w");
 
     char* binario =(char*) calloc(TAMANHO_BIN, sizeof(char));
     
