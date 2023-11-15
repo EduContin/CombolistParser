@@ -1,24 +1,24 @@
 #ifndef LISTA_H_INCLUDED
 #define LISTA_H_INCLUDED
 
-// Definindo a estrutura do nó
-struct Node {
-    char* data;
-    struct Node* next;
-};
+typedef struct
+{
+    char email[50];
+    char senha[50];
+} Dado;
 
-// Função para criar um novo nó
-struct Node* newNode(char* data);
+typedef struct Node
+{
+    Dado data;
+    struct Node *next;
+} Node;
 
-// Função para inserir novo nó de maneira ordenada
-void insertNode(struct Node** head_ref, struct Node* new_node);
-
-
-// Função para percorrer a lista organizada e escrever para o arquivo de saída
-void writeList(struct Node *head);
-
-// String para binário
-void writeAsBinary(FILE *f,char *data);
-
+Node *newNode(char *data);
+void insertNode(Node **head_ref, Node *new_node);
+void stringToBinary(FILE *f, char *data);
+char *binaryToString(char *binary);
+void writeList(Node *head, int mode, FILE *file);
+char *readLine(FILE *file);
+int findNode(Node **head_ref, Node *prev, char *email, int mode);
 
 #endif // PILHA_H_INCLUDED

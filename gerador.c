@@ -11,15 +11,21 @@
 
 int main(int argc, char *argv[])
 {   
-    struct Node* head = NULL;
+    if (argc != 3) {
+        printf("Formato inválido, utilize: ./programa <entrada> <saida>");
+        return 1;
+    }
+
+    Node* head = NULL;
 
     // Arquivos de entrada(string) e saída(binário)
     FILE* ptr;
     FILE* binPtr;
 
-    char ch[256];
     char *arquivo_txt_entrada = argv[1];
     char *arquivo_bin_saida = argv[2];
+
+    char ch[256];
 
     ptr = fopen(arquivo_txt_entrada, "r"); // lendo arquivo de entrada
     binPtr = fopen(arquivo_bin_saida, "wb"); // wb para gravação binária
@@ -49,7 +55,7 @@ int main(int argc, char *argv[])
         ch[strcspn(ch, "\n")] = 0;  // Remove the newline character
         printf("Linha lida: %s\n", ch);
 
-        struct Node* new_node = newNode(ch);
+        Node *new_node = newNode(ch);
         insertNode(&head, new_node);
 
         contador++;
@@ -59,15 +65,14 @@ int main(int argc, char *argv[])
     };
 
     printf("\nContador: %d\n\n", contador);
- 
+
+    printf("Lista Encadeada Ordenada: ");
+    writeList(head, 1, NULL);
+    writeList(head, 2, binPtr);
+
     // Closing the file
     fclose(ptr);
     fclose(binPtr);
-
-    printf("Lista Encadeada Ordenada: ");
-    writeList(head);
-
-    
 
     return 0;
 }
